@@ -1,0 +1,46 @@
+/* App.css */
+.App {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  form {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    margin-right: 10px;
+  }
+  
+  input[type="number"] {
+    margin-right: 10px;
+  }
+  
+  button {
+    margin-top: 10px;
+  }
+  
+  .gantt-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .gantt-entry {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+    margin-bottom: 5px;
+  }
+  
+  .process-id {
+    flex: 1;
+  }
+  
+  .start-time, .finish-time {
+    flex: 1;
+    text-align: right;
+  }
+  
