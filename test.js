@@ -1,87 +1,71 @@
-function roundRobinScheduler(processes, quantumTime) {
-  let n = processes.length;
-  let s = [];
-  for (let i = 0; i < n; i++) {
-      s[i] = [];
-      for (let j = 0; j < 20; j++) {
-          s[i][j] = -1;
-      }
-  }
-
-  let tot_wt = 0;
-  let tot_tat = 0;
-
-  let time = 0;
-  let c = n;
-
-  while (c !== 0) {
-      let mini = Infinity;
-      let flag = false;
-      let index = -1;
-
-      for (let i = 0; i < n; i++) {
-          let p = time + 0.1;
-          if (processes[i].AT <= p && mini > processes[i].AT && processes[i].BT > 0) {
-              index = i;
-              mini = processes[i].AT;
-              flag = true;
-          }
-      }
-
-      if (!flag) {
-          time++;
-          continue;
-      }
-
-      let j = 0;
-      while (s[index][j] !== -1) {
-          j++;
-      }
-
-      if (s[index][j] === -1) {
-          s[index][j] = time;
-          processes[index].ST[j] = time;
-      }
-
-      if (processes[index].BT <= quantumTime) {
-          time += processes[index].BT;
-          processes[index].BT = 0;
-      } else {
-          time += quantumTime;
-          processes[index].BT -= quantumTime;
-      }
-
-      if (processes[index].BT > 0) {
-          processes[index].AT = time + 0.1;
-      }
-
-      if (processes[index].BT === 0) {
-          c--;
-          processes[index].FT = time;
-          processes[index].WT = processes[index].FT - processes[index].AT - processes[index].BT;
-          tot_wt += processes[index].WT;
-          processes[index].TAT = processes[index].BT + processes[index].WT;
-          tot_tat += processes[index].TAT;
-      }
-  }
-
-  return {
-      processes: processes,
-  };
-}
-
-// Example usage
-let processes = [
-  { pos: 1, AT: 3, BT: 1, ST: [], WT: 0, FT: 0, TAT: 0 },
-  { pos: 2, AT: 1, BT: 4, ST: [], WT: 0, FT: 0, TAT: 0 },
-  { pos: 3, AT: 4, BT: 2, ST: [], WT: 0, FT: 0, TAT: 0 },
-  { pos: 4, AT: 0, BT: 6, ST: [], WT: 0, FT: 0, TAT: 0 },
-  { pos: 5, AT: 2, BT: 3, ST: [], WT: 0, FT: 0, TAT: 0 }
-];
-
-let quantumTime = 4;
-let result = roundRobinScheduler(processes, quantumTime);
-let avgWt = 0;
-for(let i = 0; i < result.processes.length; i++) {
-  avgWt += result.processes[i].FT - ;
-}
+function OptimalPage(pg, pn, fn) {
+    // Create an array for given number of
+    // frames and initialize it as empty.
+    let fr = new Array(fn).fill(-1);
+    
+    // Traverse through page reference array
+    // and check for miss and hit.
+    let hit = 0;
+    for (let i = 0; i < pn; i++) {
+        // Page found in a frame : HIT
+        let found = false;
+        for (let j = 0; j < fn; j++) {
+        if (fr[j] === pg[i]) {
+            hit++;
+            found = true;
+            break;
+        }
+        }
+    
+        if (found) {
+        continue;
+        }
+    
+        // Page not found in a frame : MISS
+    
+        // If there is space available in frames.
+        let emptyFrame = false;
+        for (let j = 0; j < fn; j++) {
+        if (fr[j] === -1) {
+            fr[j] = pg[i];
+            emptyFrame = true;
+            break;
+        }
+        }
+    
+        if (emptyFrame) {
+        continue;
+        }
+    
+        // Find the page to be replaced.
+        let farthest = -1;
+        let replaceIndex = -1;
+        for (let j = 0; j < fn; j++) {
+        let k = i + 1;
+        while (k < pn) {
+            if (fr[j] === pg[k]) {
+            if (k > farthest) {
+                farthest = k;
+                replaceIndex = j;
+            }
+            break;
+            }
+            k++;
+        }
+        if (k === pn) {
+            replaceIndex = j;
+            break;
+        }
+        }
+        fr[replaceIndex] = pg[i];
+    }
+    
+    console.log("No. of hits = " + hit);
+    console.log("No. of misses = " + (pn - hit));
+    }
+    
+    let pg = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5];
+    let pn = pg.length;
+    let fn = 4;
+    OptimalPage(pg, pn, fn);
+    
