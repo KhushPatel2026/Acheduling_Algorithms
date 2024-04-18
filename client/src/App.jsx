@@ -119,15 +119,15 @@ function App() {
             </thead>
             <tbody>
               {result.ganttChart.map((entry) => (
-                <tr key={entry.processId}>
-                  <td>P{entry.processId}</td>
-                  <td>{entry.arrivalTime}</td>
-                  <td>{entry.burstTime}</td>
-                  <td>{entry.finishTime}</td>
-                  <td>{entry.finishTime - entry.arrivalTime}</td>
-                  <td>{(entry.finishTime - entry.arrivalTime) - entry.burstTime}</td>
-                  {algorithm === 'Priority' && (<td>{entry.priority}</td>)}
-                </tr>
+                  <tr key={entry.processId}>
+                    <td>P{entry.processId}</td>
+                    <td>{entry.arrivalTime}</td>
+                    <td>{entry.burstTime}</td>
+                    <td>{entry.finishTime}</td>
+                    <td>{entry.finishTime - entry.arrivalTime}</td>
+                    <td>{(entry.finishTime - entry.arrivalTime) - entry.burstTime}</td>
+                    {algorithm === 'Priority' && (<td>{entry.priority}</td>)}
+                  </tr>
               ))}
             </tbody>
           </table>
