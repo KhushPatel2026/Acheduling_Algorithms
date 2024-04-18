@@ -14,6 +14,8 @@ function roundRobinScheduler(processes, quantumTime) {
   let time = 0;
   let c = n;
 
+  let hello = 0;
+
   while (c !== 0) {
       let mini = Infinity;
       let flag = false;
