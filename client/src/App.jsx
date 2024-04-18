@@ -30,8 +30,9 @@ function App() {
   };
 
   return (
+    <div>
     <div className="App">
-      <h1>Scheduling Algorithms Demo</h1>
+      <h1>Scheduling Algorithms Project</h1>
       <form onSubmit={handleSubmit}>
         <label>
           Algorithm:
@@ -51,8 +52,13 @@ function App() {
         )}
         <br />
         <label>Processes:</label>
+        <div className='inputBox'>
+          <label>Arrival Time</label>
+          <label>Burst Time</label>
+          {algorithm === 'Priority' && (<label>Prority</label>)}
+        </div>
         {processes.map((process, index) => (
-          <div key={index}>
+          <div key={index} className='inputBox'>
             <input
               type="number"
               value={process.arrivalTime}
@@ -87,16 +93,25 @@ function App() {
           <h2>Gantt Chart</h2>
           <div className="gantt-chart">
             {result.ganttChart.map((entry, index) => (
-              <div key={index} className="gantt-entry">
-                <span className="process-id">P{entry.processId}</span>
-                <span className="start-time">{entry.startTime}</span>
-                <span className="finish-time">{entry.finishTime}</span>
+              <div key={index} >
+                <div className="gantt-entry" style={{ width: `${(entry.finishTime - entry.startTime)*27}px` }}>
+                  <span className="process-id">P{entry.processId}</span>
+                </div>
+                <div>
+                  <span className="start-time">{entry.startTime}</span>
+                  <span>-</span>
+                  <span className="finish-time">{entry.finishTime}</span>
+                </div>
+                
               </div>
             ))}
           </div>
         </div>
       )}
     </div>
+    <footer>Made by Khush And Nishant</footer>
+    </div>
+
   );
 }
 
