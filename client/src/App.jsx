@@ -114,6 +114,7 @@ function App() {
                 <th>Finish Time</th>
                 <th>Turnaround Time</th>
                 <th>Waiting Time</th>
+                {algorithm === 'Priority' && (<th>Prority</th>)}
               </tr>
             </thead>
             <tbody>
@@ -125,6 +126,7 @@ function App() {
                   <td>{entry.finishTime}</td>
                   <td>{entry.finishTime - entry.arrivalTime}</td>
                   <td>{(entry.finishTime - entry.arrivalTime) - entry.burstTime}</td>
+                  {algorithm === 'Priority' && (<td>{entry.priority}</td>)}
                 </tr>
               ))}
             </tbody>

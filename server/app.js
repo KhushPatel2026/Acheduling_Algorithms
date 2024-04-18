@@ -98,7 +98,7 @@ function priorityScheduler(processes) {
             if (currentTime < highestPriorityProcess.arrivalTime) {
                 currentTime = highestPriorityProcess.arrivalTime;
             }
-            ganttChart.push({ processId: highestPriorityProcess.id, startTime: currentTime });
+            ganttChart.push({ processId: highestPriorityProcess.id, startTime: currentTime, arrivalTime: highestPriorityProcess.arrivalTime, burstTime: highestPriorityProcess.burstTime, priority: highestPriorityProcess.priority });
             waitingTime += currentTime - highestPriorityProcess.arrivalTime;
             currentTime += highestPriorityProcess.burstTime;
             turnaroundTime += currentTime - highestPriorityProcess.arrivalTime;
