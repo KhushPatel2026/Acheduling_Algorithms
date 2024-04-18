@@ -21,7 +21,7 @@ function fcfsScheduler(processes) {
         if (currentTime < processes[i].arrivalTime) {
             currentTime = processes[i].arrivalTime;
         }
-        ganttChart.push({ processId: processes[i].id, startTime: currentTime });
+        ganttChart.push({ processId: processes[i].id, startTime: currentTime, arrivalTime: processes[i].arrivalTime, burstTime: processes[i].burstTime });
         waitingTime += currentTime - processes[i].arrivalTime;
         currentTime += processes[i].burstTime;
         turnaroundTime += currentTime - processes[i].arrivalTime;
@@ -54,7 +54,7 @@ function sjfScheduler(processes) {
 
         if (arrivedProcesses.length > 0) {
             const shortestJob = arrivedProcesses.shift(); // Get the process with the shortest burst time
-            ganttChart.push({ processId: shortestJob.id, startTime: currentTime });
+            ganttChart.push({ processId: shortestJob.id, startTime: currentTime, arrivalTime: shortestJob.arrivalTime, burstTime: shortestJob.burstTime });
             waitingTime += currentTime - shortestJob.arrivalTime;
             currentTime += shortestJob.burstTime;
             turnaroundTime += currentTime - shortestJob.arrivalTime;
