@@ -30,7 +30,6 @@ function App() {
   };
 
   return (
-    <div>
     <div className="App">
       <h1>Scheduling Algorithms Project</h1>
       <form onSubmit={handleSubmit}>
@@ -102,14 +101,36 @@ function App() {
                   <span>-</span>
                   <span className="finish-time">{entry.finishTime}</span>
                 </div>
-                
               </div>
             ))}
           </div>
+          <h2>Process Results</h2>
+          <table className="results-table">
+            <thead>
+              <tr>
+                <th>Process ID</th>
+                <th>Arrival Time</th>
+                <th>Burst Time</th>
+                <th>Finish Time</th>
+                <th>Turnaround Time</th>
+                <th>Waiting Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {result.ganttChart.map((entry) => (
+                <tr key={entry.processId}>
+                  <td>P{entry.processId}</td>
+                  <td>{entry.arrivalTime}</td>
+                  <td>{entry.burstTime}</td>
+                  <td>{entry.finishTime}</td>
+                  <td>{entry.finishTime - entry.arrivalTime}</td>
+                  <td>{(entry.finishTime - entry.arrivalTime) - entry.burstTime}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
-    </div>
-    <footer>Made by Khush And Nishant</footer>
     </div>
 
   );
