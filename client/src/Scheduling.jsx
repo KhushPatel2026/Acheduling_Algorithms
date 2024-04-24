@@ -118,14 +118,14 @@ function Scheduling() {
               </tr>
             </thead>
             <tbody>
-              {result.ganttChart.map((entry) => (
-                  <tr key={entry.processId}>
-                    <td>P{entry.processId}</td>
+              {result.table.map((entry) => (
+                  <tr key={entry.process}>
+                    <td>P{entry.process}</td>
                     <td>{entry.arrivalTime}</td>
                     <td>{entry.burstTime}</td>
                     <td>{entry.finishTime}</td>
-                    <td>{entry.finishTime - entry.arrivalTime}</td>
-                    <td>{(entry.finishTime - entry.arrivalTime) - entry.burstTime}</td>
+                    <td>{entry.turnaroundTime}</td>
+                    <td>{entry.waitingTime}</td>
                     {algorithm === 'Priority' && (<td>{entry.priority}</td>)}
                   </tr>
               ))}

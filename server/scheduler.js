@@ -4,6 +4,7 @@ function fcfsScheduler(processes) {
     let waitingTime = 0;
     let turnaroundTime = 0;
     let ganttChart = [];
+    let table = [];
 
     processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
 
@@ -16,12 +17,22 @@ function fcfsScheduler(processes) {
         currentTime += processes[i].burstTime;
         turnaroundTime += currentTime - processes[i].arrivalTime;
         ganttChart[ganttChart.length - 1].finishTime = currentTime;
+
+        // Populate the table object
+        table.push({
+            process: processes[i].id,
+            arrivalTime: processes[i].arrivalTime,
+            burstTime: processes[i].burstTime,
+            finishTime: currentTime,
+            turnaroundTime: currentTime - processes[i].arrivalTime,
+            waitingTime: currentTime - processes[i].arrivalTime - processes[i].burstTime
+        });
     }
 
     const averageWaitingTime = waitingTime / processes.length;
     const averageTurnaroundTime = turnaroundTime / processes.length;
 
-    return { averageWaitingTime, averageTurnaroundTime, ganttChart };
+    return { averageWaitingTime, averageTurnaroundTime, ganttChart, table };
 }
 
 // SJF (Non-preemptive) Scheduler
@@ -31,6 +42,7 @@ function sjfScheduler(processes) {
     let turnaroundTime = 0;
     const totalProcesses = processes.length;
     let ganttChart = [];
+    let table = [];
 
     // Sort processes by arrival time initially
     processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
@@ -50,6 +62,16 @@ function sjfScheduler(processes) {
             turnaroundTime += currentTime - shortestJob.arrivalTime;
             ganttChart[ganttChart.length - 1].finishTime = currentTime;
 
+            // Populate the table object
+            table.push({
+                process: shortestJob.id,
+                arrivalTime: shortestJob.arrivalTime,
+                burstTime: shortestJob.burstTime,
+                finishTime: currentTime,
+                turnaroundTime: currentTime - shortestJob.arrivalTime,
+                waitingTime: currentTime - shortestJob.arrivalTime - shortestJob.burstTime
+            });
+
             // Remove the executed process from the list of processes
             processes = processes.filter(process => process.id !== shortestJob.id);
         } else {
@@ -61,9 +83,8 @@ function sjfScheduler(processes) {
     const averageWaitingTime = waitingTime / totalProcesses;
     const averageTurnaroundTime = turnaroundTime / totalProcesses;
 
-    return { averageWaitingTime, averageTurnaroundTime, ganttChart };
+    return { averageWaitingTime, averageTurnaroundTime, ganttChart, table };
 }
-
 
 // Priority (Non-preemptive) Scheduler
 function priorityScheduler(processes) {
@@ -72,6 +93,7 @@ function priorityScheduler(processes) {
     let turnaroundTime = 0;
     const totalProcesses = processes.length;
     let ganttChart = [];
+    let table = [];
 
     // Sort processes by arrival time initially
     processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
@@ -94,6 +116,17 @@ function priorityScheduler(processes) {
             turnaroundTime += currentTime - highestPriorityProcess.arrivalTime;
             ganttChart[ganttChart.length - 1].finishTime = currentTime;
 
+            // Populate the table object
+            table.push({
+                process: highestPriorityProcess.id,
+                arrivalTime: highestPriorityProcess.arrivalTime,
+                burstTime: highestPriorityProcess.burstTime,
+                finishTime: currentTime,
+                turnaroundTime: currentTime - highestPriorityProcess.arrivalTime,
+                waitingTime: currentTime - highestPriorityProcess.arrivalTime - highestPriorityProcess.burstTime,
+                priority: highestPriorityProcess.priority
+            });
+
             // Remove the executed process from the list of processes
             processes = processes.filter(process => process.id !== highestPriorityProcess.id);
         } else {
@@ -105,68 +138,82 @@ function priorityScheduler(processes) {
     const averageWaitingTime = waitingTime / totalProcesses;
     const averageTurnaroundTime = turnaroundTime / totalProcesses;
 
-    return { averageWaitingTime, averageTurnaroundTime, ganttChart };
+    return { averageWaitingTime, averageTurnaroundTime, ganttChart, table };
 }
 
-
-// Round Robin Scheduler
+//Round Robin Scheduler
 function roundRobinScheduler(processes, timeQuantum) {
     let currentTime = 0;
-    let totalProcesses = processes.length;
-    let waitingTime = 0;
-    let turnaroundTime = 0;
+    let waitingTime = Array(processes.length).fill(0);
+    let turnaroundTime = Array(processes.length).fill(0);
+    let remainingBurstTime = processes.map(process => process.burstTime);
     let ganttChart = [];
+    let queue = [];
+    let table = [];
 
-    // Sort processes by arrival time initially
-    processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
-
-    // Track the index of the last executed process
-    let lastExecutedIndex = -1;
-
-    while (totalProcesses > 0) {
+    while (true) {
+        let done = true;
         for (let i = 0; i < processes.length; i++) {
-            const currentProcess = processes[i];
+            if (remainingBurstTime[i] > 0) {
+                done = false;
+                let executeTime = Math.min(remainingBurstTime[i], timeQuantum);
+                if (remainingBurstTime[i] > 0) {
+                    ganttChart.push({ processId: processes[i].id, startTime: currentTime, burstTime: executeTime });
+                }
+                currentTime += executeTime;
+                remainingBurstTime[i] -= executeTime;
 
-            // Process can execute if it has arrived and its burst time is greater than 0
-            if (currentProcess.arrivalTime <= currentTime && currentProcess.burstTime > 0) {
-                // Ensure only one process is executed at a time
-                if (i !== lastExecutedIndex) {
-                    // Update the start time of the process
-                    const startTime = Math.max(currentTime, currentProcess.arrivalTime);
-
-                    // Execute the process for either the remaining burst time or the time quantum, whichever is smaller
-                    const executionTime = Math.min(timeQuantum, currentProcess.burstTime);
-                    currentTime = startTime + executionTime;
-
-                    // Update waiting time and turnaround time
-                    waitingTime += startTime - currentProcess.arrivalTime;
-                    turnaroundTime += currentTime - currentProcess.arrivalTime;
-
-                    // Record the process execution in the Gantt chart
-                    ganttChart.push({ processId: currentProcess.id, startTime, finishTime: currentTime });
-
-                    // Update burst time of the process
-                    currentProcess.burstTime -= executionTime;
-
-                    // If the process has completed execution, decrement the total number of processes
-                    if (currentProcess.burstTime <= 0) {
-                        totalProcesses--;
-                    }
-
-                    // Update the index of the last executed process
-                    lastExecutedIndex = i;
+                if (remainingBurstTime[i] > 0) {
+                    queue.push(i);
+                    console.log(queue);
+                } else {
+                    turnaroundTime[i] = currentTime - processes[i].arrivalTime;
                 }
             }
         }
-
-        // Increment current time if no process is available to execute
-        currentTime++;
+        if (done === true && queue.length === 0) {
+            break;
+        }
+        if (queue.length > 0) {
+            let front = queue.shift();
+            console.log(queue)
+            if (remainingBurstTime[front] > 0) {
+                ganttChart.push({ processId: processes[front].id, startTime: currentTime, burstTime: remainingBurstTime[front] });
+            }
+            currentTime += remainingBurstTime[front];
+            turnaroundTime[front] = currentTime - processes[front].arrivalTime;
+            remainingBurstTime[front] = 0;
+        }
     }
 
-    const averageWaitingTime = waitingTime / processes.length;
-    const averageTurnaroundTime = turnaroundTime / processes.length;
+    // Calculate finish times for processes in the Gantt chart
+    for (let i = 0; i < ganttChart.length; i++) {
+        ganttChart[i].finishTime = ganttChart[i].startTime + ganttChart[i].burstTime;
+    }
 
-    return { averageWaitingTime, averageTurnaroundTime, ganttChart };
+    let totalWaitingTime = 0;
+    let totalTurnaroundTime = 0;
+    for (let i = 0; i < processes.length; i++) {
+        waitingTime[i] = turnaroundTime[i] - processes[i].burstTime;
+        totalWaitingTime += waitingTime[i];
+        totalTurnaroundTime += turnaroundTime[i];
+
+        // Populate the table object
+        table.push({
+            process: processes[i].id,
+            arrivalTime: processes[i].arrivalTime,
+            burstTime: processes[i].burstTime,
+            finishTime: ganttChart.find(item => item.processId === processes[i].id).finishTime,
+            turnaroundTime: turnaroundTime[i],
+            waitingTime: waitingTime[i]
+        });
+    }
+
+    const averageWaitingTime = totalWaitingTime / processes.length;
+    const averageTurnaroundTime = totalTurnaroundTime / processes.length;
+    console.log(ganttChart);
+
+    return { averageWaitingTime, averageTurnaroundTime, ganttChart, table };
 }
 
 module.exports = {
