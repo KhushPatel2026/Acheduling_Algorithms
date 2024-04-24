@@ -157,30 +157,48 @@ function roundRobinScheduler(processes, timeQuantum) {
             if (remainingBurstTime[i] > 0) {
                 done = false;
                 let executeTime = Math.min(remainingBurstTime[i], timeQuantum);
-                if (remainingBurstTime[i] > 0) {
-                    ganttChart.push({ processId: processes[i].id, startTime: currentTime, burstTime: executeTime });
-                }
+                
+                // Add to Gantt chart
+                ganttChart.push({ processId: processes[i].id, startTime: currentTime, burstTime: executeTime });
+
+                // Update current time and remaining burst time
                 currentTime += executeTime;
                 remainingBurstTime[i] -= executeTime;
 
-                if (remainingBurstTime[i] > 0) {
-                    queue.push(i);
-                } else {
+                // Check if the process is completed
+                if (remainingBurstTime[i] === 0) {
                     turnaroundTime[i] = currentTime - processes[i].arrivalTime;
+                } else {
+                    queue.push(i);
                 }
             }
         }
-        if (done === true && queue.length === 0) {
+        
+        if (done && queue.length === 0) {
             break;
         }
-        if (queue.length > 0) {
+
+        while (queue.length > 0) {
             let front = queue.shift();
+            
+            // If the process has remaining burst time
             if (remainingBurstTime[front] > 0) {
-                ganttChart.push({ processId: processes[front].id, startTime: currentTime, burstTime: remainingBurstTime[front] });
+                let executeTime = Math.min(remainingBurstTime[front], timeQuantum);
+                
+                // Add to Gantt chart
+                ganttChart.push({ processId: processes[front].id, startTime: currentTime, burstTime: executeTime });
+
+                // Update current time and remaining burst time
+                currentTime += executeTime;
+                remainingBurstTime[front] -= executeTime;
+
+                // If the process is not completed, put it back to the queue
+                if (remainingBurstTime[front] > 0) {
+                    queue.push(front);
+                } else {
+                    turnaroundTime[front] = currentTime - processes[front].arrivalTime;
+                }
             }
-            currentTime += remainingBurstTime[front];
-            turnaroundTime[front] = currentTime - processes[front].arrivalTime;
-            remainingBurstTime[front] = 0;
         }
     }
 
@@ -189,6 +207,7 @@ function roundRobinScheduler(processes, timeQuantum) {
         ganttChart[i].finishTime = ganttChart[i].startTime + ganttChart[i].burstTime;
     }
 
+    // Calculate waiting and turnaround times
     let totalWaitingTime = 0;
     let totalTurnaroundTime = 0;
     for (let i = 0; i < processes.length; i++) {
@@ -207,10 +226,14 @@ function roundRobinScheduler(processes, timeQuantum) {
         });
     }
 
+    // Calculate averages
     const averageWaitingTime = totalWaitingTime / processes.length;
     const averageTurnaroundTime = totalTurnaroundTime / processes.length;
+
     return { averageWaitingTime, averageTurnaroundTime, ganttChart, table };
 }
+
+
 
 module.exports = {
     fcfsScheduler,
