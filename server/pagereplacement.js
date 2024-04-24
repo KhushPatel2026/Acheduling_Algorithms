@@ -1,31 +1,33 @@
 function fifo(pages, size) {
-    let frametable = [];
-    let queue = new Array(size).fill(null);
-    let loadedpages = {};
-    let pagehits = 0;
-    let pagefaults = 0;
-    let baseptr = 0;
+    let frame = [];          // Array to hold the frames
+    let pageFaults = 0;      // Counter for page faults
+    let pageHits = 0;        // Counter for page hits
+    let framesTable = [];    // Array to hold the frames table
 
-    for(let page of pages) {
-        if(!loadedpages[page]) {
-            if(queue[baseptr] !== null) {
-                delete loadedpages[queue[baseptr]];
-            }
-            loadedpages[page] = true;
-            queue[baseptr] = page;
-            baseptr = (baseptr + 1) % size;
-            pagefaults++;
+    for (let i = 0; i < pages.length; i++) {
+        // Check if the page is already in the frame
+        if (frame.includes(pages[i])) {
+            pageHits++;
         } else {
-            pagehits++;
+            // Check if the frame is full
+            if (frame.length < size) {
+                // If the frame is not full, add the page to the frame
+                frame.push(pages[i]);
+            } else {
+                // If the frame is full, remove the first page (FIFO)
+                frame.shift();
+                // Add the new page to the frame
+                frame.push(pages[i]);
+            }
+            pageFaults++;
         }
-
-        frametable.push([...queue]);
+        framesTable.push([...frame]); // Push a copy of the current frame to framesTable
     }
 
     return {
-        totalPageFaults: pagefaults,
-        totalPageHits: pagehits,
-        finalFramesTable: frametable
+        totalPageFaults: pageFaults,
+        totalPageHits: pageHits,
+        finalFramesTable: framesTable
     };
 }
 

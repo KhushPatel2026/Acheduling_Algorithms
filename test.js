@@ -1,71 +1,44 @@
-function OptimalPage(pg, pn, fn) {
-    // Create an array for given number of
-    // frames and initialize it as empty.
-    let fr = new Array(fn).fill(-1);
-    
-    // Traverse through page reference array
-    // and check for miss and hit.
-    let hit = 0;
-    for (let i = 0; i < pn; i++) {
-        // Page found in a frame : HIT
-        let found = false;
-        for (let j = 0; j < fn; j++) {
-        if (fr[j] === pg[i]) {
-            hit++;
-            found = true;
-            break;
-        }
-        }
-    
-        if (found) {
-        continue;
-        }
-    
-        // Page not found in a frame : MISS
-    
-        // If there is space available in frames.
-        let emptyFrame = false;
-        for (let j = 0; j < fn; j++) {
-        if (fr[j] === -1) {
-            fr[j] = pg[i];
-            emptyFrame = true;
-            break;
-        }
-        }
-    
-        if (emptyFrame) {
-        continue;
-        }
-    
-        // Find the page to be replaced.
-        let farthest = -1;
-        let replaceIndex = -1;
-        for (let j = 0; j < fn; j++) {
-        let k = i + 1;
-        while (k < pn) {
-            if (fr[j] === pg[k]) {
-            if (k > farthest) {
-                farthest = k;
-                replaceIndex = j;
+function fifo(pages, size) {
+    let frame = [];          // Array to hold the frames
+    let pageFaults = 0;      // Counter for page faults
+    let pageHits = 0;        // Counter for page hits
+    let framesTable = [];    // Array to hold the frames table
+
+    for (let i = 0; i < pages.length; i++) {
+        // Check if the page is already in the frame
+        if (frame.includes(pages[i])) {
+            pageHits++;
+        } else {
+            // Check if the frame is full
+            if (frame.length < size) {
+                // If the frame is not full, add the page to the frame
+                frame.push(pages[i]);
+            } else {
+                // If the frame is full, remove the first page (FIFO)
+                frame.shift();
+                // Add the new page to the frame
+                frame.push(pages[i]);
             }
-            break;
-            }
-            k++;
+            pageFaults++;
         }
-        if (k === pn) {
-            replaceIndex = j;
-            break;
-        }
-        }
-        fr[replaceIndex] = pg[i];
+        framesTable.push([...frame]); // Push a copy of the current frame to framesTable
     }
-    
-    console.log("No. of hits = " + hit);
-    console.log("No. of misses = " + (pn - hit));
-    }
-    
-    let pg = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5];
-    let pn = pg.length;
-    let fn = 4;
-    OptimalPage(pg, pn, fn);
-    
+
+    return {
+        totalPageFaults: pageFaults,
+        totalPageHits: pageHits,
+        finalFramesTable: framesTable
+    };
+}
+
+// Input string
+const pages = [1, 3, 0, 3, 5, 6, 3];
+// Frame size
+const frameSize = 3;
+
+// Run FIFO algorithm
+const result = fifo(pages, frameSize);
+
+// Output
+console.log('Total Page Faults:', result.totalPageFaults);  // Expected: 4
+console.log('Total Page Hits:', result.totalPageHits);      // Expected: 1
