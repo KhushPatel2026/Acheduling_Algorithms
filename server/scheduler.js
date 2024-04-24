@@ -165,7 +165,6 @@ function roundRobinScheduler(processes, timeQuantum) {
 
                 if (remainingBurstTime[i] > 0) {
                     queue.push(i);
-                    console.log(queue);
                 } else {
                     turnaroundTime[i] = currentTime - processes[i].arrivalTime;
                 }
@@ -176,7 +175,6 @@ function roundRobinScheduler(processes, timeQuantum) {
         }
         if (queue.length > 0) {
             let front = queue.shift();
-            console.log(queue)
             if (remainingBurstTime[front] > 0) {
                 ganttChart.push({ processId: processes[front].id, startTime: currentTime, burstTime: remainingBurstTime[front] });
             }
@@ -211,8 +209,6 @@ function roundRobinScheduler(processes, timeQuantum) {
 
     const averageWaitingTime = totalWaitingTime / processes.length;
     const averageTurnaroundTime = totalTurnaroundTime / processes.length;
-    console.log(ganttChart);
-
     return { averageWaitingTime, averageTurnaroundTime, ganttChart, table };
 }
 
