@@ -21,14 +21,14 @@
   h1 {
     color: #333;
     margin-bottom: 30px;
-    size: 300px;
+    font-size: 4rem;
   }
   
   button {
     padding: 15px 30px;
     margin: 10px;
-    height: 200px;
-    width: 300px;
+    height:70px;
+    width: 230px;
     background-color: #007BFF;
     color: #fff;
     border: none;
