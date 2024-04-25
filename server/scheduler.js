@@ -95,15 +95,15 @@ function priorityScheduler(processes) {
     let ganttChart = [];
     let table = [];
 
-    // Sort processes by arrival time initially
+    
     processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
 
     while (processes.length > 0) {
-        // Find processes that have arrived by the current time
+        
         const arrivedProcesses = processes.filter(process => process.arrivalTime <= currentTime);
 
         if (arrivedProcesses.length > 0) {
-            // Sort arrived processes by priority
+            
             arrivedProcesses.sort((a, b) => a.priority - b.priority);
 
             const highestPriorityProcess = arrivedProcesses.shift(); // Get the process with the highest priority
@@ -116,7 +116,7 @@ function priorityScheduler(processes) {
             turnaroundTime += currentTime - highestPriorityProcess.arrivalTime;
             ganttChart[ganttChart.length - 1].finishTime = currentTime;
 
-            // Populate the table object
+            
             table.push({
                 process: highestPriorityProcess.id,
                 arrivalTime: highestPriorityProcess.arrivalTime,
@@ -127,10 +127,10 @@ function priorityScheduler(processes) {
                 priority: highestPriorityProcess.priority
             });
 
-            // Remove the executed process from the list of processes
+            
             processes = processes.filter(process => process.id !== highestPriorityProcess.id);
         } else {
-            // If no processes have arrived by the current time, increment the current time
+                
             currentTime++;
         }
     }

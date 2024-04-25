@@ -3,6 +3,7 @@ import './App.css';
 import Scheduling from './Scheduling';
 import Page from './Page';
 
+
 function App() {
   const [mode, setMode] = useState(null);
 
@@ -25,8 +26,13 @@ function App() {
         <button onClick={() => handleModeSelection('Scheduling')}>Scheduling</button>
         <button onClick={() => handleModeSelection('PageReplacement')}>Page Replacement</button>
       </div>
+      <footer>
+        <h6>Note* Only integers values are accepted</h6>
+      </footer>
     </div>
-  );
+    );
+
+
 }
 
 export default App;
