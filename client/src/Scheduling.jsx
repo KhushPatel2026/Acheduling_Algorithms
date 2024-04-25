@@ -6,12 +6,13 @@ function Scheduling() {
   const [algorithm, setAlgorithm] = useState('FCFS');
   const [processes, setProcesses] = useState([{ id: 1, arrivalTime: 0, burstTime: 0, priority: 0 }]);
   const [timeQuantum, setTimeQuantum] = useState(2);
+  const [contextSwitchingTime, setContextSwitchingTime] = useState(0);
   const [result, setResult] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/schedule', { algorithm, processes, timeQuantum });
+      const response = await axios.post('http://localhost:3000/schedule', { algorithm, processes, timeQuantum, contextSwitchingTime});
       setResult(response.data);
     } catch (error) {
       console.error('Error:', error);
@@ -32,6 +33,8 @@ function Scheduling() {
   return (
     <div className="SApp">
       <h1>Scheduling Algorithms Project</h1>
+      <h3>Made by Khush and Nishant</h3>
+      <h6>Only accepts Integer value</h6>
       <form onSubmit={handleSubmit}>
         <label>
           Algorithm:
@@ -44,10 +47,16 @@ function Scheduling() {
         </label>
         <br />
         {algorithm === 'RoundRobin' && (
-          <label>
-            Time Quantum:
-            <input type="number" value={timeQuantum} onChange={(e) => setTimeQuantum(parseInt(e.target.value))} />
-          </label>
+          <div>
+            <label>
+              Time Quantum:
+              <input type="number" value={timeQuantum} onChange={(e) => setTimeQuantum(parseInt(e.target.value))} />
+            </label>
+            <label>
+              Context Switch:
+              <input type="number" value={contextSwitchingTime} onChange={(e) => setContextSwitchingTime(parseInt(e.target.value))} />
+            </label>
+          </div>
         )}
         <br />
         <label>Processes:</label>
@@ -55,7 +64,7 @@ function Scheduling() {
           <label>Arrival Time</label>
           <label>Burst Time</label>
           {algorithm === 'Priority' && (<label>Prority</label>)}
-        </div>
+        </div >
         {processes.map((process, index) => (
           <div key={index} className='inputBox'>
             <input
@@ -80,9 +89,11 @@ function Scheduling() {
             )}
           </div>
         ))}
-        <button type="button" onClick={handleAddProcess}>Add Process</button>
-        <br />
-        <button type="submit">Submit</button>
+        <div className='btn-container-scheduling'>
+          <button type="button" onClick={handleAddProcess}>Add Process</button>
+          <br />
+          <button type="submit">Submit</button>
+        </div>
       </form>
       {result && (
         <div>
@@ -93,7 +104,7 @@ function Scheduling() {
           <div className="gantt-chart">
             {result.ganttChart.map((entry, index) => (
               <div key={index} >
-                <div className="gantt-entry" style={{ width: `${(entry.finishTime - entry.startTime)*27}px` }}>
+                <div className="gantt-entry" style={{ width: `${(entry.finishTime - entry.startTime)*30}px` }}>
                   <span className="process-id">P{entry.processId}</span>
                 </div>
                 <div>

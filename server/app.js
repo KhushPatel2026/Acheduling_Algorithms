@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(cors({ origin: 'http://localhost:5173' }));
 
 app.post('/schedule', (req, res) => {
-    const { algorithm, processes, timeQuantum } = req.body;
+    const { algorithm, processes, timeQuantum, contextSwitchingTime } = req.body;
     let result;
 
     switch (algorithm) {
@@ -24,7 +24,7 @@ app.post('/schedule', (req, res) => {
             result = priorityScheduler(processes);
             break;
         case 'RoundRobin':
-            result = roundRobinScheduler(processes, timeQuantum);
+            result = roundRobinScheduler(processes, timeQuantum, contextSwitchingTime);
             break;
         default:
             result = { error: 'Invalid algorithm' };
