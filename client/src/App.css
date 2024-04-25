@@ -9,15 +9,26 @@
     height: 100vh;
     background-color: #f4f4f4;
   }
+
+  .div-app{
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
   
   h1 {
     color: #333;
     margin-bottom: 30px;
+    size: 300px;
   }
   
   button {
     padding: 15px 30px;
     margin: 10px;
+    height: 200px;
+    width: 300px;
     background-color: #007BFF;
     color: #fff;
     border: none;

@@ -21,8 +21,10 @@ function App() {
   return (
     <div className="App">
       <h1>Select Mode</h1>
-      <button onClick={() => handleModeSelection('Scheduling')}>Scheduling</button>
-      <button onClick={() => handleModeSelection('PageReplacement')}>Page Replacement</button>
+      <div className='div-app'>
+        <button onClick={() => handleModeSelection('Scheduling')}>Scheduling</button>
+        <button onClick={() => handleModeSelection('PageReplacement')}>Page Replacement</button>
+      </div>
     </div>
   );
 }
