@@ -142,7 +142,8 @@ function priorityScheduler(processes) {
 }
 
 //Round Robin Scheduler
-function roundRobinScheduler(processes, timeQuantum) {
+function roundRobinScheduler(processes, timeQuantum ,contextSwitchingTime) {
+    console.log(contextSwitchingTime);
     let currentTime = 0;
     let waitingTime = Array(processes.length).fill(0);
     let turnaroundTime = Array(processes.length).fill(0);
@@ -229,11 +230,10 @@ function roundRobinScheduler(processes, timeQuantum) {
     // Calculate averages
     const averageWaitingTime = totalWaitingTime / processes.length;
     const averageTurnaroundTime = totalTurnaroundTime / processes.length;
+    console.log(ganttChart);
 
     return { averageWaitingTime, averageTurnaroundTime, ganttChart, table };
 }
-
-
 
 module.exports = {
     fcfsScheduler,

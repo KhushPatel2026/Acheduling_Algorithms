@@ -162,7 +162,6 @@ function leastFrequentlyUsed(pages, size) {
     };
 }
 
-
 module.exports = {
     fifo,
     optimal,
