@@ -1,50 +1,50 @@
-function lru(pages, size) {
-    let frame = [];          // Array to hold the frames
-    let pageFaults = 0;      // Counter for page faults
-    let pageHits = 0;        // Counter for page hits
-    let framesTable = [];    // Array to hold the frames table
-    let lastUsed = {};       // Object to store the last used index for each page
+function leastFrequentlyUsed(pages, size) {
+  let frame = [];
+  let pageFaults = 0;
+  let pageHits = 0;
+  let framesTable = [];
+  let frequencyCounter = {};
+  let insertOrder = {};
 
-    for (let i = 0; i < pages.length; i++) {
-        // Check if the page is already in the frame
-        if (frame.includes(pages[i])) {
-            pageHits++;
-            lastUsed[pages[i]] = i;  // Update the last used index for the page
-        } else {
-            // Check if the frame is full
-            if (frame.length < size) {
-                // If the frame is not full, add the page to the frame
-                frame.push(pages[i]);
-                lastUsed[pages[i]] = i;  // Update the last used index for the page
-            } else {
-                // Find the least recently used page in the frame
-                let leastRecentlyUsed = Object.keys(lastUsed).reduce((a, b) => lastUsed[a] < lastUsed[b] ? a : b);
-                // Replace the least recently used page with the new page
-                let index = frame.indexOf(leastRecentlyUsed);
-                frame[index] = pages[i];
-                lastUsed[pages[i]] = i;  // Update the last used index for the new page
-                delete lastUsed[leastRecentlyUsed];  // Remove the least recently used page from lastUsed object
-            }
-            pageFaults++;
-        }
-        framesTable.push([...frame]); // Push a copy of the current frame to framesTable
-    }
+  for (let i = 0; i < pages.length; i++) {
+      frequencyCounter[pages[i]] = (frequencyCounter[pages[i]] || 0) + 1;
 
-    return {
-        totalPageFaults: pageFaults,
-        totalPageHits: pageHits,
-        finalFramesTable: framesTable
-    };
+      if (frame.includes(pages[i])) {
+          pageHits++;
+      } else {
+          pageFaults++;
+
+          if (frame.length < size) {
+              frame.push(pages[i]);
+          } else {
+              let leastFreqPage = null;
+              let leastFreqCount = Infinity;
+              let leastFreqOrder = Infinity;
+
+              for (let j = 0; j < frame.length; j++) {
+                  if (frequencyCounter[frame[j]] < leastFreqCount || (frequencyCounter[frame[j]] === leastFreqCount && insertOrder[frame[j]] < leastFreqOrder)) {
+                      leastFreqPage = frame[j];
+                      leastFreqCount = frequencyCounter[frame[j]];
+                      leastFreqOrder = insertOrder[frame[j]];
+                  }
+              }
+
+              // Update frequency counter and insert order for the removed page
+              delete frequencyCounter[leastFreqPage];
+              delete insertOrder[leastFreqPage];
+
+              frame[frame.indexOf(leastFreqPage)] = pages[i];
+          }
+      }
+
+      framesTable.push([...frame]);
+      insertOrder[pages[i]] = i;
+  }
+
+  return { totalPageFaults: pageFaults, totalPageHits: pageHits, finalFramesTable: framesTable };
 }
 
-// Reference String
-const pages = [1, 2, 3, 4, 5, 3, 4, 1, 6, 7,11,23,45];
-// Frame size
-const frameSize = 3;
-
-// Run LRU algorithm
-const result = lru(pages, frameSize);
-
-// Output
-console.log('Total Page Faults:', result.totalPageFaults);  // Expected: 8
-console.log('Total Page Hits:', result.totalPageHits);      // Expected: 7
+const inputPages = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1];
+const frameSize = 4;
+const result = leastFrequentlyUsed(inputPages, frameSize);
+console.log(result);

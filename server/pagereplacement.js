@@ -117,50 +117,43 @@ function leastRecentlyUsed(pages, size) {
 }
 
 function leastFrequentlyUsed(pages, size) {
-    let frametable = [];
-    let queue = new Array(size).fill(null);
-    let loadedpages = {};
-    let pagehits = 0;
-    let pagefaults = 0;
-    let pageFrequencies = {};
-    let baseptr = 0;
+    let frame = [];
+    let pageFaults = 0;
+    let pageHits = 0;
+    let framesTable = [];
+    let frequencyCounter = {};
 
     for (let i = 0; i < pages.length; i++) {
-        const page = pages[i];
-        
-        // Update page frequency
-        pageFrequencies[page] = (pageFrequencies[page] || 0) + 1;
+        frequencyCounter[pages[i]] = (frequencyCounter[pages[i]] || 0) + 1;
 
-        if (!loadedpages[page]) {
-            if (queue[baseptr] !== null) {
-                delete loadedpages[queue[baseptr]];
-            }
-            loadedpages[page] = true;
-            queue[baseptr] = page;
-            pagefaults++;
-
-            // Find the least frequently used page
-            let leastFrequentPage = queue[0];
-            for (let j = 1; j < size; j++) {
-                if (pageFrequencies[queue[j]] < pageFrequencies[leastFrequentPage]) {
-                    leastFrequentPage = queue[j];
-                }
-            }
-
-            baseptr = queue.findIndex(p => p === leastFrequentPage);
+        if (frame.includes(pages[i])) {
+            pageHits++;
         } else {
-            pagehits++;
-        }
+            pageFaults++;
 
-        frametable.push([...queue]);
+            if (frame.length < size) {
+                frame.push(pages[i]);
+            } else {
+                let leastFreqPage = frame[0];
+                for (let j = 1; j < frame.length; j++) {
+                    if (frequencyCounter[frame[j]] < frequencyCounter[leastFreqPage]) {
+                        leastFreqPage = frame[j];
+                    }
+                }
+                frame.splice(frame.indexOf(leastFreqPage), 1);
+                frame.push(pages[i]);
+            }
+        }
+        framesTable.push([...frame]);
     }
 
     return {
-        totalPageFaults: pagefaults,
-        totalPageHits: pagehits,
-        finalFramesTable: frametable
+        totalPageFaults: pageFaults,
+        totalPageHits: pageHits,
+        finalFramesTable: framesTable
     };
 }
+
 
 module.exports = {
     fifo,

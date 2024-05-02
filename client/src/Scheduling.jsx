@@ -60,6 +60,7 @@ function Scheduling() {
         )}
         <br />
         <label>Processes:</label>
+          {algorithm === 'Priority' && (<label>Lowest number has Highest Priority</label>)}
         <div className='inputBox'>
           <label>Arrival Time</label>
           <label>Burst Time</label>

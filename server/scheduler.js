@@ -142,8 +142,7 @@ function priorityScheduler(processes) {
 }
 
 //Round Robin Scheduler
-function roundRobinScheduler(processes, timeQuantum ,contextSwitchingTime) {
-    console.log(contextSwitchingTime);
+function roundRobinScheduler(processes, timeQuantum, contextSwitchingTime) {
     let currentTime = 0;
     let waitingTime = Array(processes.length).fill(0);
     let turnaroundTime = Array(processes.length).fill(0);
@@ -152,13 +151,22 @@ function roundRobinScheduler(processes, timeQuantum ,contextSwitchingTime) {
     let queue = [];
     let table = [];
 
+    // Sort processes based on arrival time
+    processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
+
     while (true) {
         let done = true;
         for (let i = 0; i < processes.length; i++) {
-            if (remainingBurstTime[i] > 0) {
+            if (remainingBurstTime[i] > 0 && processes[i].arrivalTime <= currentTime) {
                 done = false;
                 let executeTime = Math.min(remainingBurstTime[i], timeQuantum);
                 
+                // Add context switching time if necessary
+                if (ganttChart.length > 0 && ganttChart[ganttChart.length - 1].processId !== "Context Switching") {
+                    ganttChart.push({ processId: "Context Switching", startTime: currentTime, burstTime: contextSwitchingTime });
+                    currentTime += contextSwitchingTime;
+                }
+
                 // Add to Gantt chart
                 ganttChart.push({ processId: processes[i].id, startTime: currentTime, burstTime: executeTime });
 
@@ -166,11 +174,11 @@ function roundRobinScheduler(processes, timeQuantum ,contextSwitchingTime) {
                 currentTime += executeTime;
                 remainingBurstTime[i] -= executeTime;
 
-                // Check if the process is completed
-                if (remainingBurstTime[i] === 0) {
-                    turnaroundTime[i] = currentTime - processes[i].arrivalTime;
-                } else {
+                // If the process is not completed, put it back to the queue
+                if (remainingBurstTime[i] > 0) {
                     queue.push(i);
+                } else {
+                    turnaroundTime[i] = currentTime - processes[i].arrivalTime;
                 }
             }
         }
@@ -186,6 +194,12 @@ function roundRobinScheduler(processes, timeQuantum ,contextSwitchingTime) {
             if (remainingBurstTime[front] > 0) {
                 let executeTime = Math.min(remainingBurstTime[front], timeQuantum);
                 
+                // Add context switching time if necessary
+                if (ganttChart.length > 0 && ganttChart[ganttChart.length - 1].processId !== "Context Switching") {
+                    ganttChart.push({ processId: "Context Switching", startTime: currentTime, burstTime: contextSwitchingTime });
+                    currentTime += contextSwitchingTime;
+                }
+
                 // Add to Gantt chart
                 ganttChart.push({ processId: processes[front].id, startTime: currentTime, burstTime: executeTime });
 
@@ -203,11 +217,6 @@ function roundRobinScheduler(processes, timeQuantum ,contextSwitchingTime) {
         }
     }
 
-    // Calculate finish times for processes in the Gantt chart
-    for (let i = 0; i < ganttChart.length; i++) {
-        ganttChart[i].finishTime = ganttChart[i].startTime + ganttChart[i].burstTime;
-    }
-
     // Calculate waiting and turnaround times
     let totalWaitingTime = 0;
     let totalTurnaroundTime = 0;
@@ -215,13 +224,24 @@ function roundRobinScheduler(processes, timeQuantum ,contextSwitchingTime) {
         waitingTime[i] = turnaroundTime[i] - processes[i].burstTime;
         totalWaitingTime += waitingTime[i];
         totalTurnaroundTime += turnaroundTime[i];
+    }
 
-        // Populate the table object
+    // Calculate finish times for processes in the Gantt chart
+    let processFinishTimes = {};
+    for (let i = ganttChart.length - 1; i >= 0; i--) {
+        let processId = ganttChart[i].processId;
+        if (!(processId in processFinishTimes)) {
+            processFinishTimes[processId] = ganttChart[i].startTime + ganttChart[i].burstTime;
+        }
+    }
+
+    // Populate the table object
+    for (let i = 0; i < processes.length; i++) {
         table.push({
             process: processes[i].id,
             arrivalTime: processes[i].arrivalTime,
             burstTime: processes[i].burstTime,
-            finishTime: ganttChart.find(item => item.processId === processes[i].id).finishTime,
+            finishTime: processFinishTimes[processes[i].id],
             turnaroundTime: turnaroundTime[i],
             waitingTime: waitingTime[i]
         });
@@ -230,7 +250,6 @@ function roundRobinScheduler(processes, timeQuantum ,contextSwitchingTime) {
     // Calculate averages
     const averageWaitingTime = totalWaitingTime / processes.length;
     const averageTurnaroundTime = totalTurnaroundTime / processes.length;
-    console.log(ganttChart);
 
     return { averageWaitingTime, averageTurnaroundTime, ganttChart, table };
 }
