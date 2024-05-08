@@ -71,7 +71,7 @@ function Page() {
             </div>
             {result && (
               <div className="results-container">
-                <h2>Results</h2>
+                <h2>Results of {algorithm}</h2>
                 <p>Total Page Faults: {result.totalPageFaults}</p>
                 <p>Total Page Hits: {result.totalPageHits}</p>
                 <h3>Final Frames Table:</h3>
