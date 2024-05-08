@@ -76,30 +76,25 @@
   }
 
   .results-container {
-    margin: 20px;
+    margin-top: 20px;
   }
   
   .frames-table {
+    width:20px;
     border-collapse: collapse;
-    width: 100%;
   }
   
   .frame-cell {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+    padding: 10px;
   }
   
   .frame-info {
-    margin-bottom: 10px;
-  }
-  
-  .incoming-string {
-    font-weight: bold;
+    border: 1px solid #ddd;
+    padding: 10px;
   }
   
   .page-table {
-    width: 100%;
+    width: 20px;
   }
   
   .page-row {
@@ -107,13 +102,21 @@
   }
   
   .page-cell {
-    padding: 8px;
+    padding: 5px;
   }
   
   .page-element {
-    padding: 2px 4px;
-    background-color: #f2f2f2;
-    border-radius: 4px;
-    margin-right: 2px;
+    margin-right: 5px;
+  }
+  
+  /* Add Flexbox properties */
+  .results-container .frame-info {
+    display: flex;
+    flex-wrap: wrap; /* This allows the content to wrap to the next line */
+  }
+  
+  .results-container .frame-info .page-table {
+    flex: 1; /* This allows each table to grow and shrink equally */
+    margin-right: 10px; /* Optional: Add spacing between tables */
   }
   

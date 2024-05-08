@@ -46,7 +46,7 @@ function Page() {
             <div className="form-group">
                 <label>
                     Input String:
-                    <input type="text" value={inputString} onChange={handleInputChange} />
+                    <input type="text" value={inputString} onChange={handleInputChange} placeholder='Ex: 3 5 1 2 7 0 4 2 1 6 0 3 7 4 1 5 2 6 0 3 7 4 5 1 2' />
                 </label>
             </div>
             <div className="form-group">
@@ -78,32 +78,35 @@ function Page() {
                 <table className="frames-table">
                   <tbody>
                     <tr>
-                      {result.finalFramesTable.map((frame, index) => (
-                        <td key={index} className="frame-cell">
-                          <div className="frame-info">
-                            <p className="incoming-string">Incoming String: {displayString[index]}</p>
-                            <table className="page-table">
-                              <tbody>
-                                {frame.map((page, pageIndex) => (
-                                  <tr key={`${index}-${pageIndex}`} className="page-row">
-                                    <td className="page-cell">
-                                      {Array.isArray(page) ? (
-                                        <div>
-                                          {page.map((element, elementIndex) => (
-                                            <span key={elementIndex} className="page-element">{element} </span>
-                                          ))}
-                                        </div>
-                                      ) : (
-                                        <span className="page-element">{page}</span>
-                                      )}
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </td>
-                      ))}
+                    {result.finalFramesTable.map((frame, index) => (
+  <td key={index} className="frame-cell">
+    <div className="frame-info">
+      <p className="incoming-string">Incoming Page: {displayString[index]}</p>
+      <table className="page-table">
+        <tbody>
+          {frame.map((page, pageIndex) => (
+            <tr key={`${index}-${pageIndex}`} className="page-row">
+              <td className="page-cell">
+                {Array.isArray(page) ? (
+                  <div>
+                    {page.map((element, elementIndex) => (
+                      <span key={elementIndex} className="page-element">{element} </span>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="page-element">{page}</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    {/* Conditionally render line break after the 13th frame cell */}
+    {index === 12 && <br />}
+  </td>
+))}
+
                     </tr>
                   </tbody>
                 </table>
