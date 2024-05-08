@@ -76,38 +76,44 @@
   }
 
   .results-container {
-    margin-top: 20px;
+    margin: 20px;
   }
   
-  table {
-    width: 100%;
+  .frames-table {
     border-collapse: collapse;
+    width: 100%;
   }
   
-  th, td {
+  .frame-cell {
     border: 1px solid #ddd;
     padding: 8px;
-    text-align: left;
+    text-align: center;
   }
   
-  th {
+  .frame-info {
+    margin-bottom: 10px;
+  }
+  
+  .incoming-string {
+    font-weight: bold;
+  }
+  
+  .page-table {
+    width: 100%;
+  }
+  
+  .page-row {
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .page-cell {
+    padding: 8px;
+  }
+  
+  .page-element {
+    padding: 2px 4px;
     background-color: #f2f2f2;
+    border-radius: 4px;
+    margin-right: 2px;
   }
-  
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  li {
-    display: inline;
-    margin-right: 5px;
-  }
-  
-  
   
