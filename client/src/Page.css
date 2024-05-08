@@ -1,6 +1,5 @@
 /* Page.css */
 
-
 .page-container {
     font-family: Arial, sans-serif;
     padding: 20px;
@@ -11,21 +10,17 @@
   h1 {
     text-align: center;
     color: #333;
-    margin-bottom: 10px;
-
   }
   
   .form-group  {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin: 30px;
     margin-bottom: 15px;
   }
   
   label {
     display: block;
-    margin-bottom: 10px;
     font-weight: bold;
   }
 
@@ -46,7 +41,7 @@
   }
   
   button {
-    padding: 10px 20px;
+    padding: 2px 2px;
     background-color: #007BFF;
     color: #fff;
     border: none;
@@ -61,7 +56,7 @@
   }
   
   .results-container {
-    margin-top: 30px;
+    margin-top: 10px;
     border-top: 1px solid #ccc;
     padding-top: 20px;
   }
@@ -76,12 +71,13 @@
   }
 
   .results-container {
-    margin-top: 20px;
+    max-width: 100%;
+    overflow-x: auto;
   }
+  
   
   .frames-table {
     width:20px;
-    border-collapse: collapse;
   }
   
   .frame-cell {
@@ -89,8 +85,9 @@
   }
   
   .frame-info {
+    padding: 5px;
+    font-size: medium;
     border: 1px solid #ddd;
-    padding: 10px;
   }
   
   .page-table {
@@ -120,3 +117,6 @@
     margin-right: 10px; /* Optional: Add spacing between tables */
   }
   
+  h2{
+    height: 10px;
+  }

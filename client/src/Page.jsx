@@ -43,6 +43,7 @@ function Page() {
     return (
         <div className="page-container">
             <h1>Page Replacement Algorithms</h1>
+            <h3>Made by Khush(220222) and Nishant(220212)</h3>
             <div className="form-group">
                 <label>
                     Input String:
@@ -74,39 +75,37 @@ function Page() {
                 <h2>Results of {algorithm}</h2>
                 <p>Total Page Faults: {result.totalPageFaults}</p>
                 <p>Total Page Hits: {result.totalPageHits}</p>
+                <p>Page Fault Percentage: {(result.totalPageFaults / (result.totalPageFaults + result.totalPageHits)) * 100}%</p>
                 <h3>Final Frames Table:</h3>
                 <table className="frames-table">
                   <tbody>
                     <tr>
                     {result.finalFramesTable.map((frame, index) => (
-  <td key={index} className="frame-cell">
-    <div className="frame-info">
-      <p className="incoming-string">Incoming Page: {displayString[index]}</p>
-      <table className="page-table">
-        <tbody>
-          {frame.map((page, pageIndex) => (
-            <tr key={`${index}-${pageIndex}`} className="page-row">
-              <td className="page-cell">
-                {Array.isArray(page) ? (
-                  <div>
-                    {page.map((element, elementIndex) => (
-                      <span key={elementIndex} className="page-element">{element} </span>
+                      <td key={index} className="frame-cell">
+                        <div className="frame-info">
+                          <p className="incoming-string">IP: {displayString[index]}</p>
+                          <table className="page-table">
+                            <tbody>
+                              {frame.map((page, pageIndex) => (
+                                <tr key={`${index}-${pageIndex}`} className="page-row">
+                                  <td className="page-cell">
+                                    {Array.isArray(page) ? (
+                                      <div>
+                                        {page.map((element, elementIndex) => (
+                                          <span key={elementIndex} className="page-element">{element} </span>
+                                        ))}
+                                      </div>
+                                    ) : (
+                                      <span className="page-element">{page}</span>
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
                     ))}
-                  </div>
-                ) : (
-                  <span className="page-element">{page}</span>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    {/* Conditionally render line break after the 13th frame cell */}
-    {index === 12 && <br />}
-  </td>
-))}
-
                     </tr>
                   </tbody>
                 </table>

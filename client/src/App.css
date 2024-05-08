@@ -26,9 +26,8 @@
   
   button {
     padding: 5px 5px;
-    margin: 10px;
     height:40px;
-    width: 100px;
+    width: fit-content;
     background-color: #007BFF;
     color: #fff;
     border: none;
