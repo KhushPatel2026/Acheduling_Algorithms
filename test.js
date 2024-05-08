@@ -1,50 +1,42 @@
-function leastFrequentlyUsed(pages, size) {
-  let frame = [];
-  let pageFaults = 0;
-  let pageHits = 0;
-  let framesTable = [];
-  let frequencyCounter = {};
-  let insertOrder = {};
-
-  for (let i = 0; i < pages.length; i++) {
-      frequencyCounter[pages[i]] = (frequencyCounter[pages[i]] || 0) + 1;
-
-      if (frame.includes(pages[i])) {
-          pageHits++;
-      } else {
-          pageFaults++;
-
-          if (frame.length < size) {
-              frame.push(pages[i]);
-          } else {
-              let leastFreqPage = null;
-              let leastFreqCount = Infinity;
-              let leastFreqOrder = Infinity;
-
-              for (let j = 0; j < frame.length; j++) {
-                  if (frequencyCounter[frame[j]] < leastFreqCount || (frequencyCounter[frame[j]] === leastFreqCount && insertOrder[frame[j]] < leastFreqOrder)) {
-                      leastFreqPage = frame[j];
-                      leastFreqCount = frequencyCounter[frame[j]];
-                      leastFreqOrder = insertOrder[frame[j]];
-                  }
-              }
-
-              // Update frequency counter and insert order for the removed page
-              delete frequencyCounter[leastFreqPage];
-              delete insertOrder[leastFreqPage];
-
-              frame[frame.indexOf(leastFreqPage)] = pages[i];
-          }
-      }
-
-      framesTable.push([...frame]);
-      insertOrder[pages[i]] = i;
-  }
-
-  return { totalPageFaults: pageFaults, totalPageHits: pageHits, finalFramesTable: framesTable };
-}
-
-const inputPages = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1];
+const inputString = [3, 5, 1, 2, 7, 0, 4, 2, 1, 6, 0, 3, 7, 4, 1, 5, 2, 6, 0, 3, 7, 4, 5, 1, 2];
 const frameSize = 4;
-const result = leastFrequentlyUsed(inputPages, frameSize);
-console.log(result);
+leastRecentlyUsed(inputString, frameSize);
+
+function leastRecentlyUsed(pages, size) {
+    let frame = [];          // Array to hold the frames
+    let pageFaults = 0;      // Counter for page faults
+    let pageHits = 0;        // Counter for page hits
+    let framesTable = [];    // Array to hold the frames table
+
+    for (let i = 0; i < pages.length; i++) {
+        let pageIndex = frame.indexOf(pages[i]);
+        // Check if the page is already in the frame
+        if (pageIndex !== -1) {
+            // If page exists, move it to the end of the frame (most recently used)
+            frame.splice(pageIndex, 1);
+            frame.push(pages[i]);
+            pageHits++;
+        } else {
+            // Check if the frame is full
+            if (frame.length < size) {
+                // If the frame is not full, add the page to the frame
+                frame.push(pages[i]);
+            } else {
+                // If the frame is full, remove the least recently used page (first element)
+                frame.shift();
+                // Add the new page to the frame
+                frame.push(pages[i]);
+            }
+            pageFaults++;
+        }
+        framesTable.push([...frame]); // Push a copy of the current frame to framesTable
+    }
+
+    console.log(framesTable, pageFaults, pageHits);
+
+    return {
+        totalPageFaults: pageFaults,
+        totalPageHits: pageHits,
+        finalFramesTable: framesTable
+    };
+}

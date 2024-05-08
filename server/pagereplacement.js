@@ -31,6 +31,8 @@ function fifo(pages, size) {
     };
 }
 
+
+
 function optimal(pages, size) {
     let frame = [];          // Array to hold the frames
     let pageFaults = 0;      // Counter for page faults
@@ -82,32 +84,32 @@ function leastRecentlyUsed(pages, size) {
     let pageFaults = 0;      // Counter for page faults
     let pageHits = 0;        // Counter for page hits
     let framesTable = [];    // Array to hold the frames table
-    let lastUsed = {};       // Object to store the last used index for each page
 
     for (let i = 0; i < pages.length; i++) {
+        let pageIndex = frame.indexOf(pages[i]);
         // Check if the page is already in the frame
-        if (frame.includes(pages[i])) {
+        if (pageIndex !== -1) {
+            // If page exists, move it to the end of the frame (most recently used)
+            frame.splice(pageIndex, 1);
+            frame.push(pages[i]);
             pageHits++;
-            lastUsed[pages[i]] = i;  // Update the last used index for the page
         } else {
             // Check if the frame is full
             if (frame.length < size) {
                 // If the frame is not full, add the page to the frame
                 frame.push(pages[i]);
-                lastUsed[pages[i]] = i;  // Update the last used index for the page
             } else {
-                // Find the least recently used page in the frame
-                let leastRecentlyUsed = Object.keys(lastUsed).reduce((a, b) => lastUsed[a] < lastUsed[b] ? a : b);
-                // Replace the least recently used page with the new page
-                let index = frame.indexOf(leastRecentlyUsed);
-                frame[index] = pages[i];
-                lastUsed[pages[i]] = i;  // Update the last used index for the new page
-                delete lastUsed[leastRecentlyUsed];  // Remove the least recently used page from lastUsed object
+                // If the frame is full, remove the least recently used page (first element)
+                frame.shift();
+                // Add the new page to the frame
+                frame.push(pages[i]);
             }
             pageFaults++;
         }
         framesTable.push([...frame]); // Push a copy of the current frame to framesTable
     }
+
+    console.log(framesTable, pageFaults, pageHits);
 
     return {
         totalPageFaults: pageFaults,

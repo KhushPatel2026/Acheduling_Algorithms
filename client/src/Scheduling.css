@@ -65,7 +65,7 @@ button:hover {
 .gantt-chart {
   display: flex;
   align-items: center;
-  overflow-x: auto;
+  flex-wrap: wrap;
   margin-top: 20px;
 }
 

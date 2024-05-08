@@ -33,7 +33,7 @@ function Scheduling() {
   return (
     <div className="SApp">
       <h1>Scheduling Algorithms Project</h1>
-      <h3>Made by Khush and Nishant</h3>
+      <h3>Made by Khush(220222) and Nishant(220212)</h3>
       <h6>Only accepts Integer value</h6>
       <form onSubmit={handleSubmit}>
         <label>
@@ -98,7 +98,7 @@ function Scheduling() {
       </form>
       {result && (
         <div>
-          <h2>Results</h2>
+          <h2>Results of {algorithm}</h2>
           <p>Average Waiting Time: {result.averageWaitingTime}</p>
           <p>Average Turnaround Time: {result.averageTurnaroundTime}</p>
           <h2>Gantt Chart</h2>
