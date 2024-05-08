@@ -163,12 +163,12 @@ function roundRobinScheduler(processes, timeQuantum, contextSwitchingTime) {
                 
                 // Add context switching time if necessary
                 if (ganttChart.length > 0 && ganttChart[ganttChart.length - 1].processId !== "Context Switching") {
-                    ganttChart.push({ processId: "Context Switching", startTime: currentTime, burstTime: contextSwitchingTime });
+                    ganttChart.push({ processId: `CS-${contextSwitchingTime}`, startTime: currentTime, burstTime: contextSwitchingTime, finishTime:currentTime+contextSwitchingTime });
                     currentTime += contextSwitchingTime;
                 }
 
                 // Add to Gantt chart
-                ganttChart.push({ processId: processes[i].id, startTime: currentTime, burstTime: executeTime });
+                ganttChart.push({ processId: processes[i].id, startTime: currentTime, burstTime: executeTime, finishTime:currentTime+executeTime });
 
                 // Update current time and remaining burst time
                 currentTime += executeTime;
@@ -196,12 +196,12 @@ function roundRobinScheduler(processes, timeQuantum, contextSwitchingTime) {
                 
                 // Add context switching time if necessary
                 if (ganttChart.length > 0 && ganttChart[ganttChart.length - 1].processId !== "Context Switching") {
-                    ganttChart.push({ processId: "Context Switching", startTime: currentTime, burstTime: contextSwitchingTime });
+                    ganttChart.push({ processId: `CS-${contextSwitchingTime}`, startTime: currentTime, burstTime: contextSwitchingTime, finishTime:currentTime+contextSwitchingTime });
                     currentTime += contextSwitchingTime;
                 }
 
                 // Add to Gantt chart
-                ganttChart.push({ processId: processes[front].id, startTime: currentTime, burstTime: executeTime });
+                ganttChart.push({ processId: processes[front].id, startTime: currentTime, burstTime: executeTime, finishTime:currentTime+executeTime });
 
                 // Update current time and remaining burst time
                 currentTime += executeTime;
@@ -250,7 +250,6 @@ function roundRobinScheduler(processes, timeQuantum, contextSwitchingTime) {
     // Calculate averages
     const averageWaitingTime = totalWaitingTime / processes.length;
     const averageTurnaroundTime = totalTurnaroundTime / processes.length;
-
     return { averageWaitingTime, averageTurnaroundTime, ganttChart, table };
 }
 

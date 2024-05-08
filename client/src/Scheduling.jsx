@@ -105,7 +105,7 @@ function Scheduling() {
           <div className="gantt-chart">
             {result.ganttChart.map((entry, index) => (
               <div key={index} >
-                <div className="gantt-entry" style={{ width: `${(entry.finishTime - entry.startTime)*30}px` }}>
+                <div className="gantt-entry" style={{ width: `80px` }}>
                   <span className="process-id">P{entry.processId}</span>
                 </div>
                 <div>
